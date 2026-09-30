@@ -1,9 +1,10 @@
 #!/bin/bash
-# Semi-brute-force a single TrueCrypt (optionally VeraCrypt) volume: tries every
-# password in a candidate list against it until one opens the volume.
+# TrueDict: dictionary attack against a single TrueCrypt (optionally VeraCrypt)
+# volume - tries every password in a candidate list against it until one opens
+# the volume.
 #
 # Usage:
-#   ./crack_tc.sh <volume_file> <password_list_file> [--veracrypt]
+#   ./truedict.sh <volume_file> <password_list_file> [--veracrypt]
 #
 # By default only the classic TrueCrypt (tcrypt) format is tried. Pass
 # --veracrypt to also run a second pass with VeraCrypt-compatible KDFs after
@@ -14,8 +15,8 @@
 # prompt). On success, the volume is briefly mounted read-only to confirm the
 # password actually works, then immediately unmounted and closed again - this
 # script never leaves a volume mounted. The working password and mount point
-# (as it was mounted at the time) are recorded in crack_results.txt (next to
-# this script); every attempt is logged to crack_attempts.log.
+# (as it was mounted at the time) are recorded in truedict_results.txt (next
+# to this script); every attempt is logged to truedict_attempts.log.
 set -u
 
 VERACRYPT_FLAG=0
@@ -51,15 +52,15 @@ MAPNAME="tc_$(echo "$FNAME" | sed 's/[^A-Za-z0-9._-]/_/g')"
 MOUNTPOINT="/mnt/$MAPNAME"
 
 SCRIPTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LOG="$SCRIPTDIR/crack_attempts.log"
-RESULTS="$SCRIPTDIR/crack_results.txt"
+LOG="$SCRIPTDIR/truedict_attempts.log"
+RESULTS="$SCRIPTDIR/truedict_results.txt"
 
 log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') $1" | tee -a "$LOG"
 }
 
 # Capture the sudo password once via a GUI prompt (works even with no controlling tty).
-SUDO_PW=$(zenity --password --title="sudo password: cracking $FNAME")
+SUDO_PW=$(zenity --password --title="sudo password: dictionary attack on $FNAME")
 if [ -z "$SUDO_PW" ]; then
     log "[FATAL] $FNAME -> no sudo password entered, aborting"
     exit 1

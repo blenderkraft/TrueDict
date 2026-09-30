@@ -1,8 +1,8 @@
-# crack_tc.sh
+# TrueDict
 
-A small Bash script that tries a list of candidate passwords against a single
-TrueCrypt (or, optionally, VeraCrypt) container file until one of them opens
-it, then tells you which password worked.
+A small Bash dictionary attack tool that tries a list of candidate passwords
+against a single TrueCrypt (or, optionally, VeraCrypt) container file until
+one of them opens it, then tells you which password worked.
 
 ## Why this exists
 
@@ -38,9 +38,9 @@ have the right to open.
    **unmounts and closes it again** - the script never leaves a volume
    mounted when it exits, successful or not.
 4. The outcome (success + working password, or failure) is appended to
-   `crack_results.txt`. Every individual attempt (but never the passwords
+   `truedict_results.txt`. Every individual attempt (but never the passwords
    themselves, aside from the one that ultimately worked) is logged to
-   `crack_attempts.log`.
+   `truedict_attempts.log`.
 
 By default only classic TrueCrypt (`tcrypt`) key derivation is tried. Pass
 `--veracrypt` to also run a second pass using VeraCrypt-compatible KDFs (which
@@ -88,13 +88,13 @@ instead of typed repeatedly into a terminal.
 ## Usage
 
 ```
-./crack_tc.sh <volume_file> <password_list_file> [--veracrypt]
+./truedict.sh <volume_file> <password_list_file> [--veracrypt]
 ```
 
 Example, using the sample volume and password list included in this repo:
 
 ```
-./crack_tc.sh sample_volume.tc sample_passwords.txt
+./truedict.sh sample_volume.tc sample_passwords.txt
 ```
 
 Output on success:
@@ -125,10 +125,10 @@ first.
 On Arch: `sudo pacman -S cryptsetup zenity`
 On Debian/Ubuntu: `sudo apt install cryptsetup zenity`
 
-## Companion tool: tcmap.sh
+## Companion tool: truedict_map.sh
 
 Also included in this repo. Once you already know a volume's password (e.g.
-after `crack_tc.sh` finds it, or you just remember it), `tcmap.sh` is a
+after `truedict.sh` finds it, or you just remember it), `truedict_map.sh` is a
 simpler script for manually mapping/unmounting a volume for actual use - it
 mounts read-only, supports `--veracrypt`, and prompts for both the sudo
 password and the volume passphrase through the normal (hidden, non-echoing)
@@ -136,21 +136,21 @@ terminal prompts, since at that point you're running it interactively
 yourself:
 
 ```
-./tcmap.sh map <volume_file> [mapping_name] [--veracrypt]
-./tcmap.sh unmap <mapping_name>
+./truedict_map.sh map <volume_file> [mapping_name] [--veracrypt]
+./truedict_map.sh unmap <mapping_name>
 ```
 
 Example, using the sample volume from this repo:
 
 ```
-./tcmap.sh map sample_volume.tc sample
+./truedict_map.sh map sample_volume.tc sample
 # ... enter your sudo password, then the volume passphrase ('test') when prompted ...
-./tcmap.sh unmap sample
+./truedict_map.sh unmap sample
 ```
 
 ## Disclaimer
 
 Use this only on volumes you own or otherwise have explicit authorization to
-access. This is a password-recovery convenience tool, not a general-purpose
-password-cracking tool, and it's only as good as the candidate list you give
-it.
+access. This is a password-recovery convenience tool built around a
+dictionary attack, not a general-purpose brute-force cracking tool, and it's
+only as good as the candidate list you give it.
