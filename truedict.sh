@@ -16,8 +16,40 @@
 # password actually works, then immediately unmounted and closed again - this
 # script never leaves a volume mounted. The working password and mount point
 # (as it was mounted at the time) are recorded in truedict_results.txt (next
-# to this script); every attempt is logged to truedict_attempts.log.
+# to this script); every attempt is logged to truedict_attempts.log. A sound
+# plays when the script finishes - one sound for a clean success, another for
+# any other outcome (see play_sound() below).
 set -u
+
+# Sound played when the script finishes: a different one for a clean success
+# vs. any other outcome (failure, partial, or a fatal early exit). Both are
+# standard freedesktop sound-theme files, commonly present on Linux desktops
+# (GNOME/KDE/XFCE all pull in the sound-theme-freedesktop package). If
+# they're missing, or no audio player is found, this falls back to a plain
+# terminal bell - it never fails the script itself.
+SOUND_SUCCESS="/usr/share/sounds/freedesktop/stereo/complete.oga"
+SOUND_FAILURE="/usr/share/sounds/freedesktop/stereo/dialog-error.oga"
+
+play_sound() {
+    local sound="$1"
+    if [ -f "$sound" ]; then
+        for player in "paplay" "pw-play" "ffplay -nodisp -autoexit -loglevel quiet" "mpv --no-video --really-quiet"; do
+            if command -v "${player%% *}" >/dev/null 2>&1; then
+                $player "$sound" >/dev/null 2>&1 && return
+            fi
+        done
+    fi
+    printf '\a'
+}
+
+play_sound_for_exit() {
+    if [ "$1" -eq 0 ]; then
+        play_sound "$SOUND_SUCCESS"
+    else
+        play_sound "$SOUND_FAILURE"
+    fi
+}
+trap 'play_sound_for_exit $?' EXIT
 
 VERACRYPT_FLAG=0
 POSITIONAL=()

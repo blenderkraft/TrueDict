@@ -41,6 +41,12 @@ have the right to open.
    `truedict_results.txt`. Every individual attempt (but never the passwords
    themselves, aside from the one that ultimately worked) is logged to
    `truedict_attempts.log`.
+5. A sound plays when the script finishes, so you don't have to watch the
+   terminal while it works through a long list - a distinct sound for a
+   clean success versus any other outcome (failure, a partial mount problem,
+   or an early fatal error). Both are standard freedesktop sound-theme files
+   (commonly present on Linux desktops); if they're missing or no audio
+   player is found, it falls back to a plain terminal bell instead.
 
 By default only classic TrueCrypt (`tcrypt`) key derivation is tried. Pass
 `--veracrypt` to also run a second pass using VeraCrypt-compatible KDFs (which
@@ -121,6 +127,10 @@ first.
 - `zenity`, and a running graphical session (X11 or Wayland) for the password
   prompt.
 - `sudo` access.
+- Optional, for the finish sound: one of `paplay`, `pw-play`, `ffplay`, or
+  `mpv`, plus the `sound-theme-freedesktop` package (for
+  `/usr/share/sounds/freedesktop/stereo/*.oga`). None of this is required -
+  without it, `truedict.sh` just falls back to a terminal bell.
 
 On Arch: `sudo pacman -S cryptsetup zenity`
 On Debian/Ubuntu: `sudo apt install cryptsetup zenity`
