@@ -91,22 +91,22 @@ instead of typed repeatedly into a terminal.
 ./crack_tc.sh <volume_file> <password_list_file> [--veracrypt]
 ```
 
-Example:
+Example, using the sample volume and password list included in this repo:
 
 ```
-./crack_tc.sh volumes/some_volume.tc my_passwords.txt
+./crack_tc.sh sample_volume.tc sample_passwords.txt
 ```
 
 Output on success:
 
 ```
-SUCCESS: some_volume.tc opened with password 'hunter2' (tcrypt)
+SUCCESS: sample_volume.tc opened with password 'test' (tcrypt)
 ```
 
 Output on failure:
 
 ```
-FAILED: no password in my_passwords.txt opened some_volume.tc
+FAILED: no password in sample_passwords.txt opened sample_volume.tc
 ```
 
 ### Password list format
@@ -127,16 +127,25 @@ On Debian/Ubuntu: `sudo apt install cryptsetup zenity`
 
 ## Companion tool: tcmap.sh
 
-Once you already know a volume's password (e.g. after `crack_tc.sh` finds
-it, or you just remember it), `tcmap.sh` is a simpler script for manually
-mapping/unmounting a volume for actual use - it mounts read-only, supports
-`--veracrypt`, and prompts for both the sudo password and the volume
-passphrase through the normal (hidden, non-echoing) terminal prompts, since
-at that point you're running it interactively yourself:
+Also included in this repo. Once you already know a volume's password (e.g.
+after `crack_tc.sh` finds it, or you just remember it), `tcmap.sh` is a
+simpler script for manually mapping/unmounting a volume for actual use - it
+mounts read-only, supports `--veracrypt`, and prompts for both the sudo
+password and the volume passphrase through the normal (hidden, non-echoing)
+terminal prompts, since at that point you're running it interactively
+yourself:
 
 ```
 ./tcmap.sh map <volume_file> [mapping_name] [--veracrypt]
 ./tcmap.sh unmap <mapping_name>
+```
+
+Example, using the sample volume from this repo:
+
+```
+./tcmap.sh map sample_volume.tc sample
+# ... enter your sudo password, then the volume passphrase ('test') when prompted ...
+./tcmap.sh unmap sample
 ```
 
 ## Disclaimer
