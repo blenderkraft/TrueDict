@@ -60,7 +60,7 @@ log() {
 }
 
 # Capture the sudo password once via a GUI prompt (works even with no controlling tty).
-SUDO_PW=$(zenity --password --title="sudo password: dictionary attack on $FNAME")
+SUDO_PW=$(zenity --password --title="sudo password: dictionary attack on $FNAME" 2>/dev/null)
 if [ -z "$SUDO_PW" ]; then
     log "[FATAL] $FNAME -> no sudo password entered, aborting"
     exit 1
